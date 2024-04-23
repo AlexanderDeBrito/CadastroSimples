@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFullStack.Context;
 using ProjetoFullStack.Model;
+using ProjetoFullStack.Service;
 
 namespace ProjetoFullStack.Controllers
 {
@@ -14,11 +15,13 @@ namespace ProjetoFullStack.Controllers
     [ApiController]
     public class ContatosController : ControllerBase
     {
+        private readonly IContatoService _service;
         private readonly Contexto _context;
 
-        public ContatosController(Contexto context)
+        public ContatosController(Contexto context, IContatoService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: api/Contatos
@@ -27,6 +30,12 @@ namespace ProjetoFullStack.Controllers
         {
             return await _context.Contato.ToListAsync();
         }
+
+        // GET: api/Contatos
+        [HttpGet("ContatosSemVinculos")]
+        public async Task<ActionResult<IEnumerable<Contato>>> ContatosSemVinculos() => Ok(
+            await _service.ContatosSemVinculos()
+            );
 
         // GET: api/Contatos/5
         [HttpGet("{id}")]
@@ -42,10 +51,17 @@ namespace ProjetoFullStack.Controllers
             return Contato;
         }
 
+        // GET: api/Contatos/5
+        [HttpGet("ContatoDeClientes/{id}")]
+        public async Task<ActionResult<Contato>> GetContatoClientes(int id) => Ok(
+           await _service.Getcontato(id)
+            );
+
+
         // PUT: api/Contatos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContato(int id, [FromForm] Contato Contato)
+        public async Task<IActionResult> PutContato(int id, [FromBody] Contato Contato)
         {
             if (id != Contato.Id)
             {
@@ -73,16 +89,34 @@ namespace ProjetoFullStack.Controllers
             return NoContent();
         }
 
+        // PUT: api/Contatos/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
+        [HttpPut("VincularCliente/{id}")]
+        public async Task<IActionResult> PutContato(int id, [FromBody] IEnumerable<int> contatosId) => Ok(
+            await _service.VincularContatos(id, contatosId)
+            );
+
+
+
         // POST: api/Contatos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Contato>> PostContato([FromForm] Contato Contato)
+        public async Task<ActionResult<Contato>> PostContato([FromBody] Contato Contato)
         {
             _context.Contato.Add(Contato);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetContato", new { id = Contato.Id }, Contato);
         }
+
+        // POST: api/Contatos
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("SaveContatos")]
+        public async Task<ActionResult<bool>> PostContato([FromBody] IEnumerable<Contato> contatos) => Ok(
+               await _service.SaveContatos(contatos)
+            );
+
 
         // DELETE: api/Contatos/5
         [HttpDelete("{id}")]

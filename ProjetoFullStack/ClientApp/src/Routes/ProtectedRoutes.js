@@ -6,7 +6,7 @@ const userService = new UserServices();
 
 const ProtectedRoutes = ({children}) => {
   const usuarioAutenticado = userService.usuarioAutenticado()
-  console.log('usuarioAutenticado', usuarioAutenticado)
+  //TODO  
   return usuarioAutenticado ? children : <Routering/>
 }
  

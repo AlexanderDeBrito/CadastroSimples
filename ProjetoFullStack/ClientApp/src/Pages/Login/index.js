@@ -14,16 +14,16 @@ const Login = () => {
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
-    console.log("passou")
     event.preventDefault();
     try {
       setLoading(true)
       const response = await userService.login(form)
-      console.log('response do Login', response)
       if (response === true) {
         alert('usuário Logado com Sucesso')
         navigate('/home')
-      }
+      }else(
+        alert('usuário ou senha Incorretos')
+      )
       setLoading(false)
     }
     catch (err) {

@@ -25,7 +25,7 @@ const Cadastro = () => {
       })
       if (data) {
         const responseLogin = await userService.login({
-          email: form.email,
+          nomeDeUsuario: form.email,
           password: form.password
         })
         if (responseLogin === true) {
@@ -75,7 +75,7 @@ const Cadastro = () => {
           type='email'
         />
         <Input
-          name='password'
+          name='senha'
           placeholder='Digite a sua senha'
           onChange={handleChange}
           type='password'
@@ -90,11 +90,11 @@ const Cadastro = () => {
           type='submit'
           text='Efetuar Cadastro!'
           onClick={handleSubmit}
-          disabled={loading === true || !validadorInput()}
+          // disabled={loading === true || !validadorInput()}
         />
         <SubContainerSign>
           <p>Já possui conta?</p>
-          <NavLink to="">Login</NavLink>
+          <NavLink to="/">Login</NavLink>
         </SubContainerSign>
       </Form>
     </Container>

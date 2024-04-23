@@ -13,5 +13,7 @@ namespace ProjetoFullStack.Model
         public string Email { get; set; }
         [Column("Telefone")]
         public string Telefone { get; set; }
+        [Column("ClienteId")]
+        public int ClienteId { get; set; }
     }
 }

@@ -13,7 +13,16 @@ export default class ClienteService {
   }
 
   async cadastrar(dados) {
-    console.log(process.env.REACT_APP_API_LOCAL_BASE + '/api');
-    return this.axios.post('Clientes/Cadastrar', dados)
+    return this.axios.post('/Clientes/Cadastrar', dados)
+  }
+
+  async Atualizar(dados) {
+    this.axios.put('/Clientes/' + dados.id, dados);
+    return true;
+  }
+
+  async Deletar(id) {
+    this.axios.delete('/Clientes/' + id);
+    return true;
   }
 }

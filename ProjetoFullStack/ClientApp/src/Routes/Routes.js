@@ -1,16 +1,18 @@
 import React from 'react';
 import ProtectedRoutes from '../Routes/ProtectedRoutes'
-import  {Layout}  from '../components/Layout';
+import { Layout } from '../components/Layout';
 import { Home } from '../components/Home';
 import Clientes from '../Pages/Grid/Cliente/GridCliente';
-import  AddCliente  from '../Pages/Cadastro/Cliente/FormCliente';
+import AddCliente from '../Pages/Cadastro/Cliente/FormCliente';
 import Contatos from '../Pages/Grid/Contato/GridContato';
-import { AddContato } from '../components/Contatos/AddContato';
+import AddContato from '../Pages/Cadastro/Contato/FormContato';
 import Cadastro from '../Pages/Login/CadastroUsuario'
 import Login from '../Pages/Login/index'
+import Relatorio from '../Pages/Relatorio/Relatorio';
 import '../custom.css'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import FormGridContato from '../Pages/Cadastro/Contato/FormGridContato';
 
 const Routering = () => {
   return (
@@ -43,14 +45,6 @@ const Routering = () => {
           </ProtectedRoutes>
         }
         />
-        <Route path="/cliente/edit/:id" element={
-          <ProtectedRoutes>
-            <Layout>
-              <AddCliente />
-            </Layout>
-          </ProtectedRoutes>
-        }
-        />
         <Route path="/Listarcontatos" element={
           <ProtectedRoutes>
             <Layout>
@@ -59,7 +53,7 @@ const Routering = () => {
           </ProtectedRoutes>
         }
         />
-        <Route path="/add-contato" element={
+        <Route path="/CadastrarContato" element={
           <ProtectedRoutes>
             <Layout>
               <AddContato />
@@ -67,10 +61,18 @@ const Routering = () => {
           </ProtectedRoutes>
         }
         />
-        <Route path="/contato/edit/:id" element={
+        <Route path="/ListarRelatorio" element={
           <ProtectedRoutes>
             <Layout>
-              <AddContato />
+              <Relatorio />
+            </Layout>
+          </ProtectedRoutes>
+        }
+        />
+        <Route path="/Vincularcontato/:id" element={
+          <ProtectedRoutes>
+            <Layout>
+              <FormGridContato />
             </Layout>
           </ProtectedRoutes>
         }

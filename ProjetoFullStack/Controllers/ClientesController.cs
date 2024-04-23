@@ -43,7 +43,7 @@ namespace ProjetoFullStack.Controllers
         // PUT: api/Clientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int id, [FromForm] Cliente Cliente)
+        public async Task<IActionResult> PutCliente(int id, [FromBody] Cliente Cliente)
         {
             if (id != Cliente.Id)
             {
@@ -76,6 +76,7 @@ namespace ProjetoFullStack.Controllers
         [HttpPost("Cadastrar")]
         public async Task<ActionResult<Cliente>> PostCliente([FromBody] Cliente Cliente)
         {
+            Cliente.DataRegistro = System.DateTime.Now;
             _context.Cliente.Add(Cliente);
             await _context.SaveChangesAsync();
 

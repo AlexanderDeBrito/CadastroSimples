@@ -1,74 +1,74 @@
-import React, { useState } from "react"
-import { Table, Typography } from 'antd';
-import RelatorioService from "../../../Service/Relatorios/RelatorioService";
+import React, { useEffect, useState } from "react"
+import { Form, Table } from 'antd';
+import ClienteService from '../../Service/Clientes/ClienteService';
+import GridContato from '../../Pages/Grid/Contato/Componente/GridContato'
 
-const relatoriosService = new RelatorioService();
-
-
-const { Title } = Typography;
-
-
+const clientesService = new ClienteService();
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
-    render: (text) => <a>{text}</a>,
+    title: 'Nome',
+    dataIndex: 'nome',
+    key: 'id',
   },
   {
-    title: 'Email',
-    dataIndex: 'age',
+    title: 'E-mail',
+    dataIndex: 'email',
+    key: 'id',
   },
   {
     title: 'Telefone',
-    dataIndex: 'address',
+    dataIndex: 'telefone',
+    key: 'id',
   },
 ];
 
+const Relatorio = () => {
+  const [clientes, setClientes] = useState([]);
+  const data = [];
+  for (let i = 0; i < clientes.length; i++) {
+    data.push({
+      key: clientes[i].id,
+      nome: clientes[i].nome,
+      email: clientes[i].email,
+      telefone: clientes[i].telefone,
+    });
+  }
 
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: (record) => ({
-    disabled: record.name === 'Disabled User',
-    name: record.name,
-  }),
-};
+  const getClientes = async () => {
+    try {
+      var response = await clientesService.getclientes();
 
-const componentDidMount = async () => {
-  await relatoriosService.getrelatorios();
-}
+      setClientes(response);
+    } catch (error) {
+      console.log(error);
+      alert('Algo deu errado ao Carregar a lista de Clientes: ' + error)
+    }
+  }
 
-
-const GridRelatorio = () => {
-
-  const relatorios = [];
-
-  const [selectionType, setSelectionType] = useState('checkbox');
-  const [checkStrictly, setCheckStrictly] = useState(false);
-
-
-
-  componentDidMount();
-
-
-
+  useEffect(() => {
+    getClientes();
+  }, [])
 
   return (
-    <div>
+    <Table
+      columns={columns}
+      expandable={{
+        expandedRowRender: (record) => (
+          <Form
+            style={{
+              gridAutoRows: "auto-rows-auto"
+            }}
+          >
+            <div>
+              {<GridContato idClienteContatos={record.key} />}
+            </div>
 
-      <Title>Relatorios</Title>
-      <Table
-        rowSelection={{
-          type: selectionType,
-          ...rowSelection,
-          checkStrictly
-        }}
-        columns={columns}
-        dataSource={relatorios}
-      />
-    </div>
-  );
-
-}
-export default GridRelatorio;
+          </Form>
+        ),
+        rowExpandable: (record) => record.name !== 'Not Expandable',
+      }}
+      dataSource={data}
+    />
+  )
+};
+export default Relatorio;

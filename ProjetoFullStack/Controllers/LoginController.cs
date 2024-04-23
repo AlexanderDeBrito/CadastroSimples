@@ -14,9 +14,10 @@ namespace ProjetoFullStack.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService _service;
+
         private readonly Contexto _context;
 
-        public LoginController(Contexto contexto, ILoginService service)
+        public LoginController(Contexto contexto, ILoginService service )
         {
             _service = service;
             _context = contexto;
@@ -40,7 +41,8 @@ namespace ProjetoFullStack.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Login>> ValidarLogin([FromBody] Login Login) => Ok( await _service.ValidarLogin(Login));
+        public async Task<ActionResult<Login>> ValidarLogin([FromBody] Login Login) => Ok(
+            await _service.ValidarLogin(Login));
 
 
         // PUT: api/Login/5

@@ -1,9 +1,13 @@
 ﻿import React, { useEffect, useState } from "react"
-import { Table, Typography, Button, ConfigProvider, Space } from 'antd';
+import { Table, Typography, Button, ConfigProvider, Space, Divider, Link } from 'antd';
 import { TinyColor } from '@ctrl/tinycolor';
 import ContatoService from "../../../Service/Contatos/ContatoService";
+import { useNavigate } from 'react-router-dom'
+import ModalContato from "../../../components/Modal/ModalFormContato";
 
 const contatosService = new ContatoService();
+
+const initialValue = { id: 0, nome: 'teste', email: '', telefone: '', dataRegistro: '' }
 
 
 const { Title } = Typography;
@@ -14,60 +18,76 @@ const getHoverColors = (colors) =>
 const getActiveColors = (colors) =>
   colors.map((color) => new TinyColor(color).darken(5).toString());
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'nome',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'email',
-    dataIndex: 'age',
-  },
-  {
-    title: 'Telefone',
-    dataIndex: 'telefone',
-  },
-];
-
-
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: (record) => ({
-    disabled: record.name === 'Disabled User',
-    name: record.name,
-  }),
-};
 
 const GridContato = () => {
-
   const [contatos, setContatos] = useState([]);
-
-  const [selectionType, setSelectionType] = useState('checkbox');
-
+  const [dadosContato, setDadoscontato] = useState(initialValue);
+  const [modalOpen, setmodalOpen] = useState(false);
 
   const getContatos = async () => {
-
     try {
       var response = await contatosService.getcontatos();
       setContatos(response);
     } catch (error) {
       console.log(error);
-      alert('Algo de errado aconteceu ao Carregar a lista de contatos: '+error);
+      alert('Algo deu errado ao Carregar a lista de Contatos: ' + error)
     }
+  }
+
+  const navigate = useNavigate()
+  const novoContato = async () => {
+    navigate('/CadastrarContato')
+  }
+
+  const handleDados = async (dados) => {
+    setmodalOpen(true);
+    setDadoscontato(dados);
+  }
+
+  const handleDelete = async (dados) => {
+
+    var response = await contatosService.Deletar(dados.id);
+    window.location.reload();
 
   }
 
   useEffect(() => {
     getContatos();
-  }, [])
+  }, []);
 
+  const columns = [
+    {
+      dataIndex: "id",
+    },
+    {
+      title: 'Nome',
+      dataIndex: 'nome',
+
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: 'E-mail',
+      dataIndex: 'email',
+
+    },
+    {
+      title: 'Telefone',
+      dataIndex: 'telefone',
+
+    },
+    {
+      title: 'Ação',
+      render: (_, record) => (
+        <Space size="middle">
+          <Button onClick={() => handleDados(record)}>Editar {record.name}</Button>
+          <Button onClick={() => handleDelete(record)}>Deletar</Button>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <div>
-
       <Title>Contatos</Title>
 
       <Space>
@@ -83,19 +103,23 @@ const GridContato = () => {
             },
           }}
         >
-          <Button type="primary" size="large">
+          <Button type="primary" size="large" onClick={novoContato}>
             Novo contato
           </Button>
         </ConfigProvider>
       </Space>
-      <Table
-        rowSelection={{
-          type: selectionType,
-          ...rowSelection,
+      <span
+        style={{
+          marginLeft: 8,
         }}
+      >
+      </span>
+      <Divider />
+      <Table
         columns={columns}
         dataSource={contatos}
       />
+      <ModalContato isOpen={modalOpen} setIsOpenMode={setmodalOpen} dadosContato={dadosContato} setDados={setDadoscontato} />
     </div>
   );
 

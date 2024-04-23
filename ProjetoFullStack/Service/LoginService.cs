@@ -14,7 +14,7 @@ namespace ProjetoFullStack.Service
 
         public LoginService(Contexto context)
         {
-            _context = context;
+            _context = context;            
         }
 
         public async Task<IEnumerable<Login>> GetLogin()
@@ -24,9 +24,24 @@ namespace ProjetoFullStack.Service
 
         public async Task<Login> ValidarLogin(Login login)
         {
-            return await _context.Login.FirstAsync(
+            try
+            {
+                var usuario = await _context.Login.FirstOrDefaultAsync(
                 l => l.NomeDeUsuario == login.NomeDeUsuario &&
-                l.Senha == login.Senha );
+                l.Senha == login.Senha);                
+                if (usuario != null)
+                {
+                    return usuario;                    
+                }
+                return new Login();
+
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
+             
         }
     }
 }

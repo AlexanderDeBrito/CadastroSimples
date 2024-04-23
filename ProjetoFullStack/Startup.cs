@@ -16,21 +16,23 @@ namespace ProjetoFullStack
         {
             Configuration = configuration;
         }
-        public IConfiguration Configuration { get; }      
+        public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
-        {           
+        {
             services.AddMvc();
             services.AddDbContext<Contexto>
                 (options => options.UseSqlServer
                 (Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllersWithViews();          
+            services.AddControllersWithViews();
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
-            });
+            });          
 
             services.AddTransient<ILoginService, LoginService>();
-        }      
+            services.AddTransient<IContatoService, ContatoService>();
+
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -39,9 +41,9 @@ namespace ProjetoFullStack
             }
             else
             {
-                app.UseExceptionHandler("/Error");          
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
-            }            
+            }
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
