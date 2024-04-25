@@ -21,12 +21,12 @@ const Cadastro = () => {
         nome: form.nome,
         Telefone: form.telefone,
         NomeDeUsuario: form.email,
-        Senha: form.password,
+        Senha: form.senha,
       })
       if (data) {
         const responseLogin = await userService.login({
           nomeDeUsuario: form.email,
-          password: form.password
+          Senha: form.senha
         })
         if (responseLogin === true) {
           alert('usuário Cadastrado com Sucesso')
